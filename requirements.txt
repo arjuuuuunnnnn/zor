@@ -3,7 +3,7 @@ cachetools==5.5.2
 certifi==2025.1.31
 charset-normalizer==3.4.1
 click==8.1.8
-google-ai-generativelanguage==0.6.15
+google-ai-generativelanguage==0.6.17
 google-api-core==2.24.2
 google-api-python-client==2.166.0
 google-auth==2.38.0
