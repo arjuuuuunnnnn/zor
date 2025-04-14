@@ -5,7 +5,7 @@ charset-normalizer==3.4.1
 click==8.1.8
 google-ai-generativelanguage==0.6.15
 google-api-core==2.24.2
-google-api-python-client==2.166.0
+google-api-python-client==2.167.0
 google-auth==2.38.0
 google-auth-httplib2==0.2.0
 google-generativeai==0.8.4
