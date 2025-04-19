@@ -8,7 +8,7 @@
   [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
   [![PRs Welcome](https://img.shields.io/github/issues-pr/arjuuuuunnnnn/zor)](CONTRIBUTING.md)
   [![Build Status](https://github.com/arjuuuuunnnnn/zor/actions/workflows/python-package.yml/badge.svg)](https://github.com/arjuuuuunnnnn/zor/actions)
-  [![PyPI Downloads](https://img.shields.io/pepy/dt/zor)](https://pypi.org/project/zor)
+  [![PyPI Downloads](https://img.shields.io/pepy/dt/zor?cacheSeconds=3600)](https://pypi.org/project/zor)
   [![Stable Version](https://img.shields.io/pypi/v/zor?color=blue)](https://pypi.org/project/zor/)
 </div>
 
