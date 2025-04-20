@@ -406,9 +406,13 @@ Only include files that need to be changed. Do not include any explanations outs
         return
     
     # Show summary of changes
-    typer.echo(f"\nRefactoring will modify {len(file_changes)} files:")
+    typer.echo(f"\nRefactoring will modify or create {len(file_changes)} files:")
     for file_path, _ in file_changes:
-        typer.echo(f"- {file_path.strip()}")
+        file_path = file_path.strip()
+        if Path(file_path).exists():
+            typer.echo(f"- {file_path} (modify)")
+        else:
+            typer.echo(f"- {file_path} (create)")
     
     # Show diffs and ask for confirmation
     if typer.confirm("Show detailed changes?"):
@@ -419,13 +423,13 @@ Only include files that need to be changed. Do not include any explanations outs
                 if Path(file_path).exists():
                     with open(file_path, "r") as f:
                         current_content = f.read()
+                    show_diff(current_content, new_content, file_path)
                 else:
-                    current_content = ""
-                    typer.echo(f"Note: {file_path} will be created.")
-                
-                # Show diff
-                show_diff(current_content, new_content, file_path)
-                
+                    typer.echo(f"\nNew file: {file_path}")
+                    typer.echo("---")
+                    typer.echo(new_content)
+                    typer.echo("---")
+
             except Exception as e:
                 typer.echo(f"Error processing {file_path}: {e}", err=True)
     
@@ -433,20 +437,24 @@ Only include files that need to be changed. Do not include any explanations outs
     if typer.confirm("Apply these changes?"):
         for file_path, new_content in file_changes:
             file_path = file_path.strip()
+            try:
+                # Create directory if needed
+                Path(file_path).parent.mkdir(parents=True, exist_ok=True)
             
-            # Create directory if needed
-            Path(file_path).parent.mkdir(parents=True, exist_ok=True)
-            
-            # Apply changes
-            if edit_file(file_path, new_content, backup=True, preview=False):
-                typer.echo(f"Updated {file_path}")
-            else:
-                typer.echo(f"Failed to update {file_path}", err=True)
-        
+                # Write the new content to the file
+                with open(file_path, "w") as f:
+                    f.write(new_content)
+                
+                if Path(file_path).exists():
+                    typer.echo(f"Updated {file_path}")
+                else:
+                    typer.echo(f"Failed to update {file_path}", err=True)
+            except Exception as e:
+                typer.echo(f"Error writing to {file_path}: {e}", err=True)
+
         # Offer to commit changes
         if typer.confirm("Commit these changes?"):
-            commit_msg = typer.prompt("Enter commit message", 
-                                    default=f"Refactor: {prompt[:50]}")
+            commit_msg = typer.prompt("Enter commit message", default=f"Refactor: {prompt[:50]}")
             if git_commit(commit_msg):
                 typer.echo("Changes committed successfully")
 
