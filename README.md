@@ -30,11 +30,7 @@ Think of it as an open-source alternative to tools like Claude Code - your AI pa
 
 
 ## Demo Video
-<div align="center">
-  <a href="https://drive.google.com/file/d/1Mo-y9HXC7Ev1el9BUN89knU5_TjNnc2d/view?usp=drive_link" target="_blank">
-    <img src="https://raw.githubusercontent.com/arjuuuuunnnnn/zor/refs/heads/master/assets/zor_tn.png" alt="zor" width="600">
-  </a>
-</div>
+[![Demo Video](https://raw.githubusercontent.com/arjuuuuunnnnn/zor/refs/heads/master/assets/coverpage.png)](https://drive.google.com/file/d/1Mo-y9HXC7Ev1el9BUN89knU5_TjNnc2d/view?usp=drive_link)
 
 ## Installation
 
