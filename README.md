@@ -28,6 +28,10 @@ Think of it as an open-source alternative to tools like Claude Code - your AI pa
 - 🔧 **Git Integration**: Commit changes directly from Zor
 - 🧠 **Project Creation**: Create a new projects with description provided
 
+
+## Demo Video
+<iframe src="https://drive.google.com/file/d/1Mo-y9HXC7Ev1el9BUN89knU5_TjNnc2d/view?usp=drive_link" width="640" height="480"></iframe>
+
 ## Installation
 
 ```bash
