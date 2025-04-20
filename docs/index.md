@@ -28,7 +28,7 @@ Zor is an open-source command-line tool that brings AI-powered code assistance d
 
 ## Quick Demo
 
-*Demo video coming soon*
+[![Demo Video](https://raw.githubusercontent.com/arjuuuuunnnnn/zor/refs/heads/master/assets/coverpage.png)](https://drive.google.com/file/d/1Mo-y9HXC7Ev1el9BUN89knU5_TjNnc2d/view?usp=drive_link)
 
 ## Tech Stack
 
