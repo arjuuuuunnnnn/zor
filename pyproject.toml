@@ -23,7 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13"
 ]
 dependencies = [
-    "google-generativeai==0.8.4",
+    "google-generativeai==0.8.5",
     "python-dotenv==1.1.0",
     "typer==0.15.2",
     "rich==14.0.0",
