@@ -30,7 +30,7 @@ Think of it as an open-source alternative to tools like Claude Code - your AI pa
 
 
 ## Quick Demo
-[![Demo Video](https://raw.githubusercontent.com/arjuuuuunnnnn/zor/refs/heads/master/assets/coverpage.png)](https://drive.google.com/file/d/1Mo-y9HXC7Ev1el9BUN89knU5_TjNnc2d/view?usp=drive_link)
+[![Demo Video](https://raw.githubusercontent.com/arjuuuuunnnnn/zor/refs/heads/master/assets/coverpage.png)](https://youtu.be/mS0ONPNhMmU?si=efayT3KuuiqZtksH)
 
 ## Installation
 
