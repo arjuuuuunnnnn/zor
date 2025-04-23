@@ -184,7 +184,6 @@ def config(key: str = None, value: str = None):
         return
     
     if value is None:
-        # Display specific key
         if key == "api_key" and current_config[key]:
             typer.echo(f"{key}: ***** (configured)")
         else:
@@ -698,10 +697,6 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
             for line in dep_lines:
                 line = line.strip()
                 if line and not line.startswith('#'):
-                    # Try to extract package name from formats like:
-                    # - react-router-dom: ^6.0.0
-                    # - react-router-dom ^6.0.0
-                    # - react-router-dom
                     parts = re.split(r'[:,\s]\s*', line.lstrip('- ').strip())
                     if parts:
                         package_name = parts[0].strip()
@@ -743,10 +738,6 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
             
             # Handle different scaffold types properly
             if scaffold_type == "CREATES_OWN_DIR":
-                # --------------------------------------
-                # KEY FIX: Handle directory creation for tools like create-react-app
-                # --------------------------------------
-                
                 if "create-react-app" in scaffold_command:
                     # For create-react-app, the format is: npx create-react-app project-name
                     scaffold_command = f"npx create-react-app {project_name}"
@@ -868,7 +859,7 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
                     # Default behavior for other commands
                     has_project_arg = False
                     project_name_position = -1
-                    for i, part in enumerate(command_parts[1:], 1):  # Skip the executable
+                    for i, part in enumerate(command_parts[1:], 1): 
                         if not part.startswith("-") and "/" not in part and "=" not in part:
                             has_project_arg = True
                             project_name_position = i
@@ -880,13 +871,7 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
                         scaffold_command = " ".join(command_parts)
                     else:
                         scaffold_command = f"{scaffold_command} {project_name}"
-                
-                # For CREATES_OWN_DIR, we'll now:
-                # 1. First remove the target directory if it exists
-                # 2. Then execute the scaffold command from the parent directory
-                # 3. Later verify the directory was created where we expected
-                
-                # Check if we need to remove the existing directory
+
                 if project_dir.exists():
                     if any(project_dir.iterdir()):
                         if typer.confirm(f"Directory {project_dir} exists. Remove it for clean scaffolding?", default=False):
@@ -1423,7 +1408,6 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
             else:
                 console.print("\n[yellow]No package manager detected for this project type[/yellow]")
         
-        # Run the application if requested
         if run:
             run_commands = {
                 "npm": "npm start",
@@ -1500,58 +1484,6 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
             title="Success",
             border_style="green"
         ))
-
-@app.command()
-@require_api_key
-def review(
-    threshold: int = typer.Option(5, "--threshold", "-t", help="Minimum severity score (1-10)"),
-    format: str = typer.Option("text", "--format", "-f", help="Output format: text, json, or markdown"),
-):
-    """Identify and quantify technical debt in the project"""
-    # Show a simple progress message
-    print("Analyzing codebase for technical debt...", flush=True)
-    
-    # Get codebase context
-    context = get_codebase_context()
-    
-    # Improved prompt with clearer instructions
-    prompt = f"""
-    Analyze the codebase for technical debt. Identify issues like:
-    
-    1. Code duplication
-    2. Overly complex functions (high cyclomatic complexity)
-    3. Outdated dependencies or patterns
-    4. Poor error handling
-    5. Lack of tests
-    6. Hard-coded values
-    7. Poor documentation
-    
-    For each issue:
-    - Rate its severity on a scale of 1-10 (where 10 is critical)
-    - Identify affected files/areas with specific line numbers when possible
-    - Provide specific refactoring suggestions with code examples
-    - Explain why this is a problem (risks and consequences)
-    
-    Group issues by category and order by severity (highest first).
-    Only include issues with severity >= {threshold}.
-    
-    At the end, include a summary with:
-    1. Total number of issues found by category
-    2. Top 3 most critical issues to fix first
-    3. Quick wins (issues that are easy to fix but have high impact)
-    
-    Return in {format} format with clear headings and structure.
-    """
-    
-    # Generate analysis
-    try:
-        print("Generating debt analysis report...")
-        analysis = generate_with_context(prompt, context)
-        print("\n" + "="*50 + " TECHNICAL DEBT REPORT " + "="*50 + "\n")
-        print(analysis)
-        print("\n" + "="*120)
-    except Exception as e:
-        print(f"Error analyzing code: {str(e)}")
 
 if __name__ == "__main__":
     app()
