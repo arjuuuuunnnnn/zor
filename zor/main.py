@@ -91,7 +91,8 @@ def help():
         ("generate-test", "Generate tests for a specific file"),
         ("refactor", "Refactor code across multiple files based on instructions"),
         ("setup", "Configure your Gemini API key"),
-        ("help", "Display all available commands and their descriptions")
+        ("help", "Display all available commands and their descriptions"),
+        ("review", "Analyses the codebase and gives suggestions")
     ]
     
     for cmd, desc in commands:
@@ -1491,6 +1492,58 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
             title="Success",
             border_style="green"
         ))
+
+@app.command()
+@require_api_key
+def review(
+    threshold: int = typer.Option(5, "--threshold", "-t", help="Minimum severity score (1-10)"),
+    format: str = typer.Option("text", "--format", "-f", help="Output format: text, json, or markdown"),
+):
+    """Identify and quantify technical debt in the project"""
+    # Show a simple progress message
+    print("Analyzing codebase for technical debt...", flush=True)
+    
+    # Get codebase context
+    context = get_codebase_context()
+    
+    # Improved prompt with clearer instructions
+    prompt = f"""
+    Analyze the codebase for technical debt. Identify issues like:
+    
+    1. Code duplication
+    2. Overly complex functions (high cyclomatic complexity)
+    3. Outdated dependencies or patterns
+    4. Poor error handling
+    5. Lack of tests
+    6. Hard-coded values
+    7. Poor documentation
+    
+    For each issue:
+    - Rate its severity on a scale of 1-10 (where 10 is critical)
+    - Identify affected files/areas with specific line numbers when possible
+    - Provide specific refactoring suggestions with code examples
+    - Explain why this is a problem (risks and consequences)
+    
+    Group issues by category and order by severity (highest first).
+    Only include issues with severity >= {threshold}.
+    
+    At the end, include a summary with:
+    1. Total number of issues found by category
+    2. Top 3 most critical issues to fix first
+    3. Quick wins (issues that are easy to fix but have high impact)
+    
+    Return in {format} format with clear headings and structure.
+    """
+    
+    # Generate analysis
+    try:
+        print("Generating debt analysis report...")
+        analysis = generate_with_context(prompt, context)
+        print("\n" + "="*50 + " TECHNICAL DEBT REPORT " + "="*50 + "\n")
+        print(analysis)
+        print("\n" + "="*120)
+    except Exception as e:
+        print(f"Error analyzing code: {str(e)}")
 
 if __name__ == "__main__":
     app()
