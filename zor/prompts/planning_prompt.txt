@@ -1,0 +1,63 @@
+        I need to create a new project with this description: "{prompt}"
+        
+        Please provide a comprehensive analysis and detailed project plan. Include:
+        
+        1. Project type and main technologies (language, framework, libraries)
+        2. Project architecture and design patterns to use
+        3. Required file structure with explanation of each component
+        4. Key files that need to be created with their purpose
+        5. Dependencies that would need to be installed
+        6. Development environment recommendations
+        7. Any best practices specific to this type of project
+        8. For any framework, specify the official scaffolding command that would initialize the project
+        
+        Format the response as:
+        
+        PROJECT_TYPE: [project type]
+        
+        MAIN_TECHNOLOGIES: [comma-separated list of main technologies]
+        
+        ARCHITECTURE: [Brief description of recommended architecture]
+        
+        SCAFFOLD_COMMAND: [Official scaffolding command if applicable, or NONE if not applicable]
+        
+        SCAFFOLD_TYPE: [One of: CREATES_OWN_DIR, NEEDS_EMPTY_DIR, IN_PLACE, or NONE. Indicates how the scaffolding tool behaves]
+        
+        PROJECT_PLAN:
+        [Detailed explanation of the project structure and components]
+        
+        DEPENDENCIES:
+        [List of key dependencies with versions if applicable]
+        
+        SETUP_COMMANDS:
+        [List of commands that would be used to initialize and setup the project]
+        
+        FILE_STRUCTURE:
+        [Tree structure of directories and files to be created]
+        
+        DEVELOPMENT_RECOMMENDATIONS:
+        [Recommendations for development environment and workflows]
+        
+        For SCAFFOLD_COMMAND, provide the exact command that should be run to initialize the project with the official tooling.
+        Examples:
+        - For React: npx create-react-app my-app
+        - For Vue: npm init vue@latest my-app
+        - For Angular: ng new my-app
+        - For Next.js: npx create-next-app my-app
+        - For Express: npx express-generator my-app
+        - For Django: django-admin startproject myproject
+        - For Spring Boot: spring init --dependencies=web,data-jpa my-project
+        - For Flutter: flutter create my_app
+        - For Rails: rails new my_app
+        - For .NET Core: dotnet new webapp -o MyApp
+        - For Gatsby: npx gatsby new my-site
+        - For Svelte: npm create svelte@latest my-app
+        - For Electron: npx create-electron-app my-app
+        - For NestJS: nest new my-nest-app
+        - For Laravel: composer create-project laravel/laravel my-app
+        
+        For SCAFFOLD_TYPE, specify how the scaffold command behaves:
+        - CREATES_OWN_DIR: The command creates its own directory (like create-react-app my-app)
+        - NEEDS_EMPTY_DIR: The command needs to be run inside an empty directory
+        - IN_PLACE: The command adds files to the current directory structure
+        - NONE: No scaffolding command is needed or available

@@ -18,6 +18,16 @@ import shutil
 
 app = typer.Typer()
 
+# load prompts
+def load_prompt(prompt_name: str) -> str:
+    """Load a prompt from the prompts directory"""
+    prompt_path = Path(__file__).parent / "prompts" / f"{prompt_name}.txt"
+    try:
+        with open(prompt_path, "r") as f:
+            return f.read()
+    except FileNotFoundError:
+        raise ValueError(f"Prompt file not found: {prompt_path}")
+
 load_dotenv()
 
 # Global flag to track if API key is validated
@@ -583,76 +593,11 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
     
     # Generate project structure based on prompt
     with console.status("[bold green]Analyzing project requirements...", spinner="dots") as status:
-        # Create context for API call
         context = {"project_prompt": prompt}
-        
-        # First, get the project plan and type with a more comprehensive prompt
-        planning_prompt = f"""
-        I need to create a new project with this description: "{prompt}"
-        
-        Please provide a comprehensive analysis and detailed project plan. Include:
-        
-        1. Project type and main technologies (language, framework, libraries)
-        2. Project architecture and design patterns to use
-        3. Required file structure with explanation of each component
-        4. Key files that need to be created with their purpose
-        5. Dependencies that would need to be installed
-        6. Development environment recommendations
-        7. Any best practices specific to this type of project
-        8. For any framework, specify the official scaffolding command that would initialize the project
-        
-        Format the response as:
-        
-        PROJECT_TYPE: [project type]
-        
-        MAIN_TECHNOLOGIES: [comma-separated list of main technologies]
-        
-        ARCHITECTURE: [Brief description of recommended architecture]
-        
-        SCAFFOLD_COMMAND: [Official scaffolding command if applicable, or NONE if not applicable]
-        
-        SCAFFOLD_TYPE: [One of: CREATES_OWN_DIR, NEEDS_EMPTY_DIR, IN_PLACE, or NONE. Indicates how the scaffolding tool behaves]
-        
-        PROJECT_PLAN:
-        [Detailed explanation of the project structure and components]
-        
-        DEPENDENCIES:
-        [List of key dependencies with versions if applicable]
-        
-        SETUP_COMMANDS:
-        [List of commands that would be used to initialize and setup the project]
-        
-        FILE_STRUCTURE:
-        [Tree structure of directories and files to be created]
-        
-        DEVELOPMENT_RECOMMENDATIONS:
-        [Recommendations for development environment and workflows]
-        
-        For SCAFFOLD_COMMAND, provide the exact command that should be run to initialize the project with the official tooling.
-        Examples:
-        - For React: npx create-react-app my-app
-        - For Vue: npm init vue@latest my-app
-        - For Angular: ng new my-app
-        - For Next.js: npx create-next-app my-app
-        - For Express: npx express-generator my-app
-        - For Django: django-admin startproject myproject
-        - For Spring Boot: spring init --dependencies=web,data-jpa my-project
-        - For Flutter: flutter create my_app
-        - For Rails: rails new my_app
-        - For .NET Core: dotnet new webapp -o MyApp
-        - For Gatsby: npx gatsby new my-site
-        - For Svelte: npm create svelte@latest my-app
-        - For Electron: npx create-electron-app my-app
-        - For NestJS: nest new my-nest-app
-        - For Laravel: composer create-project laravel/laravel my-app
-        
-        For SCAFFOLD_TYPE, specify how the scaffold command behaves:
-        - CREATES_OWN_DIR: The command creates its own directory (like create-react-app my-app)
-        - NEEDS_EMPTY_DIR: The command needs to be run inside an empty directory
-        - IN_PLACE: The command adds files to the current directory structure
-        - NONE: No scaffolding command is needed or available
-        """
-        
+
+        planning_prompt = load_prompt("planning_prompt").format(
+                prompt=prompt,
+        )
         status.update("[bold green]Generating project blueprint...")
         plan_response = generate_with_context(planning_prompt, context)
         
@@ -1029,60 +974,11 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
                         typer.echo("Project initialization cancelled.")
                         raise typer.Exit()
         # Improved file generation prompt with more context - now considers scaffolded files
-        file_generation_prompt = f"""
-        Based on the project description: "{prompt}"
-        
-        And identified project type: {project_type}
-        
-        {"A scaffolding command was executed to set up the basic project structure using the official tools for this framework/language." if scaffold_command and scaffold_command.lower() != "none" else "No scaffolding command was executed. You need to provide all necessary files for a complete project."}
-        
-        Generate the content for {"additional" if scaffold_command and scaffold_command.lower() != "none" else ""} key files needed in the project. For each file, provide:
-        1. The file path relative to the project root
-        2. The complete content of the file
-        3. A brief comment at the top of each file explaining its purpose
-        
-        Format your response like this:
-        
-        FILE: path/to/file1
-        ```
-        // Purpose: Brief explanation of this file's role in the project
-        // content of file1
-        ```
-        
-        FILE: path/to/file2
-        ```
-        // Purpose: Brief explanation of this file's role in the project
-        // content of file2
-        ```
-        
-        IMPORTANT GUIDELINES:
-        - {"If scaffolding was executed, focus on customizing and extending the scaffolded project. Do not recreate files that are typically generated by the scaffolding tool." if scaffold_command and scaffold_command.lower() != "none" else "Provide a complete set of files for a functioning project."}
-        - Always include a comprehensive README.md with:
-          * Project description and features
-          * Setup instructions (installation, configuration)
-          * Usage examples with code snippets
-          * API documentation if applicable
-          * Contribution guidelines
-        - Include appropriate configuration files (.gitignore, package.json, requirements.txt, etc.) if not already created by scaffolding
-        - Provide complete, functional code for each file (no placeholders or TODOs)
-        - Ensure code follows best practices and style conventions for the language/framework
-        - Add appropriate comments and documentation in the code
-        - Include unit tests where appropriate
-        
-        For specific frameworks, ensure you include:
-        - React: Component files, styling, routing if needed
-        - Angular: Modules, components, services
-        - Vue: Components, views, router setup
-        - Node.js: Controllers, models, routes
-        - Python: Modules, packages, tests
-        - Django: Models, views, templates, URLs
-        - Flask: Routes, templates, forms
-        - Spring Boot: Controllers, services, repositories
-        - Laravel: Controllers, models, migrations, views
-        - .NET: Controllers, models, views
-        - Flutter: Widgets, services, state management
-        """
-        
+        file_generation_prompt = load_prompt("file_generation").format(
+            prompt=prompt,
+            project_type=project_type,
+            scaffold_command=scaffold_command
+        )
         # Generate file contents
         with console.status("[bold green]Generating additional project files...", spinner="dots") as status:
             files_response = generate_with_context(file_generation_prompt, context)
