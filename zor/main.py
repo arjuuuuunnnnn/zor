@@ -373,30 +373,10 @@ def refactor(prompt: str):
     """Refactor code across multiple files based on instructions"""
     context = get_codebase_context()
     
-    instruction = f"""You are a coding assistant helping with a refactoring task across multiple files.
-    
-Task description: {prompt}
+    instruction = load_prompt("refactor_prompt").format(
+        prompt=prompt
+    )
 
-For each file that needs to be modified, please specify:
-1. The file path
-2. The complete new content for that file
-
-Format your response like this:
-
-FILE: path/to/file1
-```python
-# New content for file1
-```
-
-FILE: path/to/file2
-```python
-# New content for file2
-```
-
-Only include files that need to be changed. Do not include any explanations outside of the file blocks.
-"""
-    
-    # Get the refactoring plan
     refactoring_plan = generate_with_context(instruction, context)
     
     # Parse the plan to extract file paths and contents
@@ -466,14 +446,7 @@ def setup():
     """Configure your Gemini API key"""
     global api_key_valid
 
-    zor_ascii = r"""
-███████╗ ██████╗ ██████╗
-╚══███╔╝██╔═══██╗██╔══██╗
-  ███╔╝ ██║   ██║██████╔╝
- ███╔╝  ██║   ██║██╔══██╗
-███████╗╚██████╔╝██║  ██║
-╚══════╝ ╚═════╝ ╚═╝  ╚═╝
-"""
+    zor_ascii = load_prompt("ascii")
     console = Console()
     console.print(zor_ascii, style="bold green")
     # typer.echo(zor_ascii)

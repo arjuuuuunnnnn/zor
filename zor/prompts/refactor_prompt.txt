@@ -1,0 +1,21 @@
+You are a coding assistant helping with a refactoring task across multiple files.
+    
+Task description: {prompt}
+
+For each file that needs to be modified, please specify:
+1. The file path
+2. The complete new content for that file
+
+Format your response like this:
+
+FILE: path/to/file1
+```python
+# New content for file1
+```
+
+FILE: path/to/file2
+```python
+# New content for file2
+```
+
+Only include files that need to be changed. Do not include any explanations outside of the file blocks.
