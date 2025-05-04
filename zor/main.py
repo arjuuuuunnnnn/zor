@@ -45,7 +45,6 @@ def load_api_key():
     if api_key:
         try:
             genai.configure(api_key=api_key)
-            # Quick validation attempt - keep this lightweight
             model = genai.GenerativeModel("gemini-2.0-flash")
             response = model.generate_content("Test")
             api_key_valid = True
@@ -327,16 +326,10 @@ def generate_test(file_path: str, test_framework: str = "pytest"):
         target_file = f.read()
     
     # Create the prompt
-    prompt = f"""Generate comprehensive unit tests for the following file using {test_framework}.
-The tests should cover all functions and edge cases.
-Return only the test code without explanations.
-
-File to test:
-```python
-{target_file}
-```
-
-Existing codebase context is available for reference."""
+    prompt = load_prompt("generate_test_prompt").format(
+        test_framework=test_framework,
+        target_file=target_file
+    )
     
     # Generate the tests
     tests = generate_with_context(prompt, context)

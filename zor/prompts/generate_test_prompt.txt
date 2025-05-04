@@ -1,0 +1,10 @@
+Generate comprehensive unit tests for the following file using {test_framework}.
+The tests should cover all functions and edge cases.
+Return only the test code without explanations.
+
+File to test:
+```python
+{target_file}
+```
+
+Existing codebase context is available for reference.
