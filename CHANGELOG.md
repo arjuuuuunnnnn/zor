@@ -39,3 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimized init function for project creation
 - Fixed refactor function and made it to create new files if needed
 
+## [0.0.4] - 2025-05-24
+
+### Bug fix
+- ascii loading from prompts dir error fix
