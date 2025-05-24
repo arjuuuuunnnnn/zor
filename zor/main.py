@@ -595,7 +595,6 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
         
         # Get project information with fallbacks
         project_type = project_info.get("project_type", "Unknown")
-        setup_commands = project_info.get("setup_commands", "")
         scaffold_command = project_info.get("scaffold_command", "NONE")
         scaffold_type = project_info.get("scaffold_type", "NONE").upper()
         dependencies = project_info.get("dependencies", "")
@@ -1097,7 +1096,6 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
                         missing_files.append((detected_type, pattern))
             
             # Notify user of missing files
-            # Notify user of missing files
             if missing_files:
                 console.print("\n[bold yellow]Warning: Some expected files are missing:[/bold yellow]")
                 for framework, file_pattern in missing_files:
@@ -1151,46 +1149,6 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
             for file_path, error in failed_files:
                 console.print(f" - {file_path}: {error}")
         
-        # Execute setup commands if provided
-        if setup_commands and setup_commands.strip():
-            setup_cmds = [cmd.strip() for cmd in setup_commands.split('\n') if cmd.strip()]
-            
-            if setup_cmds:
-                console.print("\n[bold cyan]Setup Commands:[/bold cyan]")
-                for cmd in setup_cmds:
-                    console.print(f" - {cmd}")
-                
-                if typer.confirm("\nRun setup commands?", default=True):
-                    for cmd in setup_cmds:
-                        console.print(f"\n[bold green]Executing: {cmd}[/bold green]")
-                        try:
-                            # Handle platform-specific command execution
-                            shell = True if sys.platform == "win32" else False
-                            process = subprocess.run(
-                                cmd,
-                                cwd=project_dir,
-                                shell=shell,
-                                capture_output=True,
-                                text=True
-                            )
-                            
-                            if process.returncode == 0:
-                                console.print("[green]Command executed successfully[/green]")
-                                if process.stdout.strip():
-                                    console.print(process.stdout)
-                            else:
-                                console.print(f"[bold red]Command failed with code {process.returncode}[/bold red]")
-                                console.print(f"Error: {process.stderr}")
-                                
-                                if not typer.confirm("Continue with next command?", default=True):
-                                    break
-                        except Exception as e:
-                            console.print(f"[bold red]Error executing command: {str(e)}[/bold red]")
-                            
-                            if not typer.confirm("Continue with next command?", default=True):
-                                break
-        
-        # Install dependencies if requested
         if install:
             package_managers = {
                 "npm": ("package.json", "npm install"),
@@ -1327,7 +1285,6 @@ def init(prompt: str, directory: str = None, install: bool = typer.Option(True, 
                 if typer.confirm("Run the application?", default=True):
                     console.print(f"\n[bold green]Executing: {run_command}[/bold green]")
                     try:
-                        # For simplicity, we'll run this in a non-capturing way so the user sees the output directly
                         subprocess.run(
                             run_command,
                             cwd=project_dir,

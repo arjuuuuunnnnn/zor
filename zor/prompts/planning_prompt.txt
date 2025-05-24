@@ -29,9 +29,6 @@
         DEPENDENCIES:
         [List of key dependencies with versions if applicable]
         
-        SETUP_COMMANDS:
-        [List of commands that would be used to initialize and setup the project]
-        
         FILE_STRUCTURE:
         [Tree structure of directories and files to be created]
         
