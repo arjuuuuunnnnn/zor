@@ -43,3 +43,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Bug fix
 - ascii loading from prompts dir error fix
+
+## [0.0.5] - 2025-05-24
+
+### Added
+- Added support for loading prompts from a directory
+
