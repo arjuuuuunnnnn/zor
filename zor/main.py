@@ -446,7 +446,7 @@ def setup():
     """Configure your Gemini API key"""
     global api_key_valid
 
-    zor_ascii = load_prompt("ascii")
+    zor_ascii = load_prompt("zor_ascii")
     console = Console()
     console.print(zor_ascii, style="bold green")
     # typer.echo(zor_ascii)
