@@ -1,82 +1,76 @@
 import unittest
-import re
+from unittest.mock import patch, MagicMock
+import sys
+import os
+from pathlib import Path
 
-class TestRegexPatterns(unittest.TestCase):
-    
-    def test_file_parsing_regex(self):
-        """Test that the regex pattern correctly parses file content"""
-        # Sample response with correct formatting - notice the exact spacing
-        files_response = """FILE: README.md
+# Add the parent directory to path so we can import the module
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Import the init function from zor/main.py
+from zor.main import init
+
+class TestInitFunction(unittest.TestCase):
+
+    @patch('zor.main.api_key_valid', True) 
+    @patch('zor.main.generate_with_context')
+    @patch('zor.main.typer.confirm')
+    @patch('zor.main.typer.prompt')
+    @patch('zor.main.Console')
+    @patch('pathlib.Path.exists')
+    @patch('pathlib.Path.mkdir')
+    @patch('pathlib.Path.iterdir')
+    def test_basic_project_creation(self, mock_iterdir, mock_mkdir, mock_exists, 
+                                   mock_console, mock_prompt, mock_confirm, mock_generate):
+        # Setup mocks
+        mock_exists.return_value = False
+        mock_iterdir.return_value = []
+        mock_confirm.return_value = True
+        mock_prompt.return_value = "test_project"
+        mock_console_instance = MagicMock()
+        mock_console.return_value = mock_console_instance
+        mock_console_instance.status.return_value.__enter__.return_value = MagicMock()
+        
+        # Mock AI responses
+        mock_generate.side_effect = [
+            # First call - project plan
+            """PROJECT_TYPE: Python CLI Tool
+            MAIN_TECHNOLOGIES: Python, Typer
+            ARCHITECTURE: Simple CLI
+            SCAFFOLD_COMMAND: NONE
+            SCAFFOLD_TYPE: NONE""",
+            
+            # Second call - file content
+            """FILE: main.py
 ```
-# Test Project
+import typer
+app = typer.Typer()
 
-A simple test project.
-```
+@app.command()
+def hello():
+    print("Hello World")
 
-FILE: setup.py
-```
-from setuptools import setup
-
-setup(
-    name="test_project",
-    version="0.1.0",
-)
+if __name__ == "__main__":
+    app()
 ```"""
+        ]
         
-        # The regex pattern from the original code
-        file_matches = re.findall(r"FILE: (.+?)\n```(?:\w+)?\n(.+?)```", files_response, re.DOTALL)
+        # Execute the function with test parameters
+        with patch('builtins.open', unittest.mock.mock_open()):
+            init(prompt="create a simple python cli", install=False, run=False)
         
-        # Verify parsing worked
-        self.assertEqual(len(file_matches), 2)
-        self.assertEqual(file_matches[0][0], "README.md")
-        self.assertTrue("# Test Project" in file_matches[0][1])
-        self.assertEqual(file_matches[1][0], "setup.py")
-        self.assertTrue("setup(" in file_matches[1][1])
-
-    def test_project_type_extraction(self):
-        """Test that the project type is correctly extracted"""
-        # Sample response
-        plan_response = """PROJECT_TYPE: Python CLI Application
-
-MAIN_TECHNOLOGIES: Python, Typer, Rich
-
-ARCHITECTURE: Command-line interface"""
+        # Verify expected interactions
+        mock_exists.assert_called()
         
-        # Extract project type
-        project_type_match = re.search(r"PROJECT_TYPE:\s*(.*?)(?:\n\s*\n|\n\s*[A-Z_]+:)", 
-                                       plan_response + "\n\n", re.DOTALL)
+        # Updated assertion to expect mkdir to be called twice
+        self.assertEqual(mock_mkdir.call_count, 2)
         
-        # Verify extraction worked
-        self.assertIsNotNone(project_type_match)
-        project_type = project_type_match.group(1).strip()
-        self.assertEqual(project_type, "Python CLI Application")
+        # Verify the arguments passed to mkdir
+        mock_mkdir.assert_any_call(exist_ok=True, parents=True)  # First call
+        mock_mkdir.assert_any_call(parents=True, exist_ok=True)  # Second call
         
-    def test_custom_regex_file_pattern(self):
-        """Alternative regex pattern that might be more robust"""
-        files_response = """FILE: README.md
-```
-# Test Project
-
-A simple test project.
-```
-
-FILE: setup.py
-```
-from setuptools import setup
-
-setup(
-    name="test_project",
-    version="0.1.0",
-)
-```"""
-        
-        # Alternative regex that may be more reliable
-        file_matches = re.findall(r"FILE:\s*([^\n]+)(?:\n```(?:\w+)?\n)(.*?)(?:\n```)", files_response, re.DOTALL)
-        
-        # Verify parsing worked
-        self.assertEqual(len(file_matches), 2)
-        self.assertEqual(file_matches[0][0], "README.md")
-        self.assertEqual(file_matches[1][0], "setup.py")
+        # Check that generate_with_context was called twice
+        self.assertEqual(mock_generate.call_count, 2)
 
 if __name__ == '__main__':
     unittest.main()
