@@ -55,7 +55,7 @@ shellingham==1.5.4
 tqdm==4.67.1
 twine==6.1.0
 typer==0.15.2
-typing-inspection==0.4.0
+typing-inspection==0.4.1
 typing_extensions==4.13.2
 uritemplate==4.1.1
 urllib3==2.4.0
