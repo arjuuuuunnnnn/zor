@@ -41,7 +41,7 @@ pydantic_core==2.33.1
 Pygments==2.19.1
 pyparsing==3.2.3
 pyproject_hooks==1.2.0
-pytest==8.3.5
+pytest==8.4.0
 pytest-mock==3.14.0
 python-dotenv==1.1.0
 readme_renderer==44.0
