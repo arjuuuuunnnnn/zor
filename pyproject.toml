@@ -40,3 +40,4 @@ zor = "zor.main:app"
 
 [tool.setuptools]
 packages = ["zor"]
+include-package-data = true
