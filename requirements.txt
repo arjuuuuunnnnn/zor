@@ -1,7 +1,7 @@
 annotated-types==0.7.0
 build==1.2.2.post1
 cachetools==5.5.2
-certifi==2025.1.31
+certifi==2025.7.14
 cffi==1.17.1
 charset-normalizer==3.4.1
 click==8.1.8
