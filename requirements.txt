@@ -48,7 +48,7 @@ readme_renderer==44.0
 requests==2.32.3
 requests-toolbelt==1.0.0
 rfc3986==2.0.0
-rich==14.0.0
+rich==14.1.0
 rsa==4.9
 SecretStorage==3.3.3
 shellingham==1.5.4
