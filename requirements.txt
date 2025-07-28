@@ -43,7 +43,7 @@ pyparsing==3.2.3
 pyproject_hooks==1.2.0
 pytest==8.3.5
 pytest-mock==3.14.0
-python-dotenv==1.1.0
+python-dotenv==1.1.1
 readme_renderer==44.0
 requests==2.32.3
 requests-toolbelt==1.0.0
